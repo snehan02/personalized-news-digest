@@ -6,30 +6,22 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 import cron from "node-cron";
 import cors from "cors";
-import User from "./models/user.js";
-
+import User from "../models/user.js";
 
 dotenv.config();
 const app = express();
 
 /* ---------------- MIDDLEWARE ---------------- */
-app.use(express.json());
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (
-        !origin ||
-        origin === "http://localhost:5173" ||
-        origin.endsWith(".vercel.app")
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
   })
 );
+
+app.options("*", cors());
 
 
 /* ---------------- DB ---------------- */
@@ -131,17 +123,9 @@ app.get("/api/news/common", async (req, res) => {
 });
 
 /* ---------------- SEND DIGEST ---------------- */
-
 async function sendEmail(user) {
-  console.log("📨 Preparing email for:", user.email);
-  console.log("📌 Topics:", user.topics);
+  if (!user.subscribed || user.topics.length === 0) return;
 
-  if (!user.subscribed || user.topics.length === 0) {
-    console.log("❌ Email blocked: subscription or topics missing");
-    return;
-  }
-
-  // 🔥 FETCH NEWS (THIS WAS MISSING)
   const news = await axios.get("https://newsapi.org/v2/everything", {
     params: {
       q: user.topics.join(" OR "),
@@ -151,17 +135,10 @@ async function sendEmail(user) {
   });
 
   let html = `<h2>Your News Digest</h2>`;
-
   news.data.articles.forEach(a => {
-    html += `
-      <p>
-        <b>${a.title}</b><br/>
-        ${a.description || ""}
-      </p>
-    `;
+    html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
   });
 
-  // 🔥 SEND EMAIL
   await axios.post(
     "https://api.brevo.com/v3/smtp/email",
     {
@@ -177,46 +154,24 @@ async function sendEmail(user) {
       }
     }
   );
-
-  console.log("✅ Email sent to:", user.email);
 }
 
- 
-
 app.post("/api/digest/send", auth, async (req, res) => {
-  console.log("👉 Send Digest clicked by user:", req.userId);
-
   const user = await User.findById(req.userId);
   await sendEmail(user);
-
   res.json({ message: "Digest sent" });
 });
 
-
-
+/* ---------------- CRON (Vercel runs only on request, keep for local) ---------------- */
 cron.schedule(
   "0 8 * * *",
   async () => {
-    console.log("📧 Daily digest cron running at 8:00 AM IST");
-
     const users = await User.find({ subscribed: true });
     for (const user of users) {
       await sendEmail(user);
     }
-
-    console.log("✅ Daily digest sent");
   },
-  {
-    timezone: "Asia/Kolkata"
-  }
+  { timezone: "Asia/Kolkata" }
 );
+
 export default app;
-
-
-
-
-
-/* ---------------- START ---------------- 
-app.listen(3001, () => {
-  console.log("🚀 Server running at http://localhost:3001");
-});*/
