@@ -118,14 +118,20 @@ app.post("/api/subscription/toggle", auth, async (req, res) => {
 
 /* ---------------- COMMON NEWS ---------------- */
 app.get("/api/news/common", async (req, res) => {
-  const news = await axios.get("https://newsapi.org/v2/top-headlines", {
-    params: {
-      country: "us",
-      pageSize: 6,
-      apiKey: process.env.NEWS_API_KEY
-    }
-  });
-  res.json({ articles: news.data.articles });
+  try {
+    const news = await axios.get("https://newsapi.org/v2/top-headlines", {
+      params: {
+        country: "us",
+        pageSize: 6,
+        apiKey: process.env.NEWS_API_KEY
+      }
+    });
+
+    res.json({ articles: news.data.articles });
+  } catch (error) {
+    console.error("❌ News fetch failed:", error.message);
+    res.status(500).json({ error: "Failed to fetch news" });
+  }
 });
 
 /* ---------------- SEND DIGEST ---------------- */
