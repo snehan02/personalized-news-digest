@@ -12,16 +12,22 @@ dotenv.config();
 const app = express();
 
 /* ---------------- MIDDLEWARE ---------------- */
+import cors from "cors";
+
+app.use(express.json());
+
 app.use(
   cors({
-    origin: true,
+    origin: true, // 🔥 ALLOW ALL ORIGINS (REQUIRED FOR VERCEL)
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+// 🔥 REQUIRED for preflight
 app.options("*", cors());
+
 
 
 /* ---------------- DB ---------------- */
