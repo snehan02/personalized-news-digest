@@ -4,38 +4,40 @@ import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-
 import cors from "cors";
 import User from "../models/user.js";
 
 dotenv.config();
+
 const app = express();
 
-/* ---------------- MIDDLEWARE ---------------- */
-import cors from "cors";
-
+/* ---------- MIDDLEWARE ---------- */
 app.use(express.json());
 
 app.use(
   cors({
-    origin: true, // 🔥 ALLOW ALL ORIGINS (REQUIRED FOR VERCEL)
-    credentials: true,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
-// 🔥 REQUIRED for preflight
-app.options("*", cors());
+/* ---------- DB ---------- */
+let isConnected = false;
 
+async function connectDB() {
+  if (isConnected) return;
+  await mongoose.connect(process.env.MONGODB_URI);
+  isConnected = true;
+  console.log("✅ MongoDB connected");
+}
 
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
-/* ---------------- DB ---------------- */
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error(err));
-
-/* ---------------- AUTH ---------------- */
+/* ---------- AUTH ---------- */
 const auth = (req, res, next) => {
   const header = req.headers.authorization;
   if (!header) return res.status(401).json({ error: "No token" });
@@ -50,7 +52,7 @@ const auth = (req, res, next) => {
   }
 };
 
-/* ---------------- AUTH ROUTES ---------------- */
+/* ---------- ROUTES ---------- */
 app.post("/api/auth/register", async (req, res) => {
   const { email, password } = req.body;
   if (await User.findOne({ email })) {
@@ -58,12 +60,7 @@ app.post("/api/auth/register", async (req, res) => {
   }
 
   const hashed = await bcrypt.hash(password, 10);
-  await User.create({
-    email,
-    password: hashed,
-    topics: [],
-    subscribed: true
-  });
+  await User.create({ email, password: hashed, topics: [], subscribed: true });
 
   res.json({ message: "Registered" });
 });
@@ -71,52 +68,18 @@ app.post("/api/auth/register", async (req, res) => {
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
-  const token = jwt.sign(
-    { userId: user._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d"
+  });
 
   res.json({ token });
 });
 
-/* ---------------- TOPICS ---------------- */
-app.get("/api/topics", auth, async (req, res) => {
-  const user = await User.findById(req.userId);
-  res.json({ topics: user.topics });
-});
-
-app.post("/api/topics/add", auth, async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.userId,
-    { $addToSet: { topics: req.body.topic } },
-    { new: true }
-  );
-  res.json({ topics: user.topics });
-});
-
-app.post("/api/topics/remove", auth, async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.userId,
-    { $pull: { topics: req.body.topic } },
-    { new: true }
-  );
-  res.json({ topics: user.topics });
-});
-
-/* ---------------- SUBSCRIPTION TOGGLE ---------------- */
-app.post("/api/subscription/toggle", auth, async (req, res) => {
-  const user = await User.findById(req.userId);
-  user.subscribed = !user.subscribed;
-  await user.save();
-  res.json({ subscribed: user.subscribed });
-});
-
-/* ---------------- COMMON NEWS ---------------- */
 app.get("/api/news/common", async (req, res) => {
   try {
     const news = await axios.get("https://newsapi.org/v2/top-headlines", {
@@ -128,54 +91,10 @@ app.get("/api/news/common", async (req, res) => {
     });
 
     res.json({ articles: news.data.articles });
-  } catch (error) {
-    console.error("❌ News fetch failed:", error.message);
-    res.status(500).json({ error: "Failed to fetch news" });
+  } catch (err) {
+    console.error("❌ News API error:", err.message);
+    res.status(500).json({ error: "News fetch failed" });
   }
 });
-
-/* ---------------- SEND DIGEST ---------------- */
-async function sendEmail(user) {
-  if (!user.subscribed || user.topics.length === 0) return;
-
-  const news = await axios.get("https://newsapi.org/v2/everything", {
-    params: {
-      q: user.topics.join(" OR "),
-      apiKey: process.env.NEWS_API_KEY,
-      pageSize: 5
-    }
-  });
-
-  let html = `<h2>Your News Digest</h2>`;
-  news.data.articles.forEach(a => {
-    html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
-  });
-
-  await axios.post(
-    "https://api.brevo.com/v3/smtp/email",
-    {
-      sender: { email: "snehan102@gmail.com", name: "News Digest" },
-      to: [{ email: user.email }],
-      subject: "📰 Your News Digest",
-      htmlContent: html
-    },
-    {
-      headers: {
-        "api-key": process.env.BREVO_API_KEY,
-        "Content-Type": "application/json"
-      }
-    }
-  );
-}
-
-app.post("/api/digest/send", auth, async (req, res) => {
-  const user = await User.findById(req.userId);
-  await sendEmail(user);
-  res.json({ message: "Digest sent" });
-});
-
-/* ---------------- CRON (Vercel runs only on request, keep for local) ---------------- */
-
-
 
 export default app;
