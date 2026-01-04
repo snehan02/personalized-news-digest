@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import cron from "node-cron";
+
 import cors from "cors";
 import User from "../models/user.js";
 
@@ -169,15 +169,7 @@ app.post("/api/digest/send", auth, async (req, res) => {
 });
 
 /* ---------------- CRON (Vercel runs only on request, keep for local) ---------------- */
-cron.schedule(
-  "0 8 * * *",
-  async () => {
-    const users = await User.find({ subscribed: true });
-    for (const user of users) {
-      await sendEmail(user);
-    }
-  },
-  { timezone: "Asia/Kolkata" }
-);
+
+
 
 export default app;
