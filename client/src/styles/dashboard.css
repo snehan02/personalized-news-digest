@@ -1,0 +1,118 @@
+
+.dashboard {
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background: #ff5b5b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card {
+  background: rgb(255, 255, 255);
+  padding: 20px;
+  margin-top: 3px;
+  border-radius: 20px;
+}
+
+.topic-row {
+  display: flex;
+  gap: 10px;
+  font-size: larger;
+}
+
+.topic-row input {
+  flex: 1;
+  padding: 5px;
+}
+
+.topic-row button {
+  padding: 10px 16px;
+}
+
+.topic-chips span {
+  display: inline-block;
+  background: #e7f4ff;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 20px;
+}
+
+.topic-chips button {
+  margin-left: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.digest-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  background: #63b2df;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.news-item {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.news-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.theme-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #ddd;
+}
+
+/* DARK MODE */
+body.dark {
+  background: #121212;
+  color: #2c7dac;
+}
+
+body.dark .card {
+  background: #1e1e1e;
+  border-color: #333;
+}
+
+
+.read-more-link {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 14px;
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.read-more-link:hover {
+  text-decoration: underline;
+}
