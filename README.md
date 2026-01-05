@@ -34,3 +34,12 @@ Email: Brevo (Sendinblue)
 Scheduler: Node-Cron
 
 Deployment: Vercel (Frontend + Serverless Backend)
+
+
+
+
+![Alt text](C:\Users\sneha\OneDrive\Pictures\Screenshots\Screenshot 2026-01-05 212430.png)
+
+
+
+
