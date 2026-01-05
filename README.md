@@ -38,7 +38,7 @@ Deployment: Vercel (Frontend + Serverless Backend)
 
 
 
-![Alt text](C:\Users\sneha\OneDrive\Pictures\Screenshots\Screenshot 2026-01-05 212430.png)
+![Alt text](Screenshot 2026-01-04 145927.png)
 
 
 
