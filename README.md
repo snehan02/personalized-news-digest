@@ -1,4 +1,4 @@
-📰 Personalized News Digest
+<img width="1920" height="1080" alt="Screenshot 2026-01-05 221750" src="https://github.com/user-attachments/assets/adec4f2c-c7ec-47f6-a45c-d0aa16532e97" />📰 Personalized News Digest
 A full-stack web application that delivers personalized news updates based on user interests and sends daily email digests automatically.
 
 
@@ -36,14 +36,20 @@ Scheduler: Node-Cron
 Deployment: Vercel (Frontend + Serverless Backend)
 
 
+Dashboard
+<img width="1920" height="1080" alt="Screenshot 2026-01-05 221750" src="https://github.com/user-attachments/assets/67b99d49-3193-4ee3-91f1-f76f0c97a3a6" />
+
+
+email received-
 <img width="1529" height="772" alt="Screenshot 2026-01-04 145927" src="https://github.com/user-attachments/assets/1dc7a912-1067-4b7a-a73a-ca2a2e8628c2" />
+
 
 <img width="1910" height="923" alt="Screenshot 2026-01-04 145854" src="https://github.com/user-attachments/assets/ba867ff7-2865-4870-8860-b52dcf45fe3d" />
 
 
 <img width="1920" height="1080" alt="Screenshot 2025-12-31 004956" src="https://github.com/user-attachments/assets/abef8257-642c-4559-bfb7-3978d209aec1" />
 
-<img width="1920" height="1080" alt="Screenshot 2026-01-03 000145" src="https://github.com/user-attachments/assets/b4dc0b9b-631d-444f-90ee-cb236b8f404f" />
+
 
 
 
