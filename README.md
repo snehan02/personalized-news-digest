@@ -10,10 +10,15 @@ Backend: https://personalized-news-digest-n2rsprbps-snehas-projects-bea0e590.ver
 ✨ Features
 
  Secure Authentication – Login & registration with hashed passwords and JWT
+ 
  Personalized Dashboard – Add/remove favorite topics
+ 
  Live News Feed – Real-time news from NewsAPI
+ 
  Email Digests -Manual send from dashboard
+ 
  Automated daily email at 8:00 AM IST
+ 
  Light/Dark Mode
  Time-based Greeting - goodmorning,goodevening
 
