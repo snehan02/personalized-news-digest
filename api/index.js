@@ -7,13 +7,18 @@ app.use(express.json());
 app.use(
   cors({
     origin: true,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    credentials: true
   })
 );
 
+// TEST ROUTE (MUST WORK)
 app.get("/api/health", (req, res) => {
-  res.json({ status: "API WORKING" });
+  res.json({ status: "Backend working ✅" });
+});
+
+// TEST AUTH
+app.post("/api/auth/login", (req, res) => {
+  res.json({ token: "test-token" });
 });
 
 export default app;
