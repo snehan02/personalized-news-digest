@@ -24,8 +24,13 @@ Backend: https://personalized-news-digest-n2rsprbps-snehas-projects-bea0e590.ver
 
 
 🛠 Tech Stack
+
 Frontend: React (Vite), Axios, CSS
+
 Backend: Node.js, Express, MongoDB
+
 Email: Brevo (Sendinblue)
+
 Scheduler: Node-Cron
+
 Deployment: Vercel (Frontend + Serverless Backend)
