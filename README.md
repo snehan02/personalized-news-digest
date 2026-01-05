@@ -1,4 +1,4 @@
-<img width="1920" height="1080" alt="Screenshot 2026-01-05 221750" src="https://github.com/user-attachments/assets/adec4f2c-c7ec-47f6-a45c-d0aa16532e97" />📰 Personalized News Digest
+📰 Personalized News Digest
 A full-stack web application that delivers personalized news updates based on user interests and sends daily email digests automatically.
 
 
