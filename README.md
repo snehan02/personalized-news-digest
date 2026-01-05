@@ -43,6 +43,7 @@ Deployment: Vercel (Frontend + Serverless Backend)
 
 <img width="1920" height="1080" alt="Screenshot 2025-12-31 004956" src="https://github.com/user-attachments/assets/abef8257-642c-4559-bfb7-3978d209aec1" />
 
+<img width="1920" height="1080" alt="Screenshot 2026-01-03 000145" src="https://github.com/user-attachments/assets/b4dc0b9b-631d-444f-90ee-cb236b8f404f" />
 
 
 
