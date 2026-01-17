@@ -1,36 +1,32 @@
-#📰 Personalized News Digest
+# 📰 Personalized News Digest
+
 A full-stack web application that delivers personalized news updates based on user interests and sends daily email digests automatically.
 
-#✨ Features
+---
 
- #Secure Authentication – Login & registration with hashed passwords and JWT
- 
- #Personalized Dashboard – Add/remove favorite topics
- 
- #Live News Feed – Real-time news from NewsAPI
- 
- #Email Digests -Manual send from dashboard
- 
- #Automated daily email at 8:00 AM IST
- 
- #Light/Dark Mode
- Time-based Greeting - goodmorning,goodevening
+## ✨ **Features**
 
+- **Secure Authentication** – Login & registration with hashed passwords and JWT  
+- **Personalized Dashboard** – Add/remove favorite topics  
+- **Live News Feed** – Real-time news from NewsAPI  
+- **Email Digests** – Manual send from dashboard  
+- **Automated Daily Emails** – Sent every day at **8:00 AM IST**  
+- **Light/Dark Mode & Time-based Greeting** – Good Morning / Good Evening  
 
-🛠 Tech Stack
+---
 
-Frontend: React (Vite), Axios, CSS
+## 🛠 **Tech Stack**
 
-Backend: Node.js, Express, MongoDB
+- **Frontend:** React (Vite), Axios, CSS  
+- **Backend:** Node.js, Express, MongoDB  
+- **Email Service:** Brevo (Sendinblue)  
+- **Scheduler:** Node-Cron  
+- **Deployment:** Vercel (Frontend + Serverless Backend)  
 
-Email: Brevo (Sendinblue)
+---
 
-Scheduler: Node-Cron
+## 📊 **Dashboard**
 
-Deployment: Vercel (Frontend + Serverless Backend)
-
-
-Dashboard
 <img width="1920" height="1080" alt="Screenshot 2026-01-05 221750" src="https://github.com/user-attachments/assets/67b99d49-3193-4ee3-91f1-f76f0c97a3a6" />
 
 
