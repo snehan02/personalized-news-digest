@@ -14,18 +14,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// DB Connection helper (Vercel serverless functions might reuse connections)
-let isConnected = false;
+// DB Connection helper with timeout
 const connectDB = async () => {
-  if (isConnected) return;
+  if (mongoose.connection.readyState >= 1) return;
+  
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    isConnected = true;
+    console.log("⏳ Connecting to MongoDB...");
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // 5 second timeout
+    });
     console.log("✅ MongoDB connected");
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err.message);
+    throw err;
   }
 };
+
+// Health check route (no DB required)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Server is running! 🚀" });
+});
 
 // Auth Middleware
 const auth = (req, res, next) => {
