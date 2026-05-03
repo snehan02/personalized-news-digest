@@ -23,16 +23,21 @@
   background: var(--danger);
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(255, 91, 91, 0.2);
 }
 
 .logout-btn:hover {
   opacity: 0.9;
   transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(255, 91, 91, 0.3);
 }
 
 .card {
@@ -196,13 +201,26 @@
 
 @media (max-width: 480px) {
   .dash-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dash-header h1 {
+    font-size: 1.2rem;
+    margin: 0;
   }
 
   .logout-btn {
-    width: 100%;
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .logout-btn span {
+    display: none; /* Hide text on very small screens, keep icon */
   }
 
   .topic-row {

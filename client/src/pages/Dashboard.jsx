@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api/api";
+import { LogOut } from "lucide-react";
 import "../styles/dashboard.css";
 
 export default function Dashboard({ onLogout }) {
@@ -80,7 +81,8 @@ export default function Dashboard({ onLogout }) {
       <header className="dash-header">
         <h1>News Dashboard</h1>
         <button className="logout-btn" onClick={onLogout}>
-          Logout
+          <LogOut size={18} />
+          <span>Logout</span>
         </button>
       </header>
 
