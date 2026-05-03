@@ -2,10 +2,6 @@
 
 A premium, full-stack news aggregation platform that delivers tailored news content based on user-defined topics. Built with a modern tech stack and a focus on high-fidelity, responsive design.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-![React](https://img.shields.io/badge/React-19-blue?logo=react)
-![Node](https://img.shields.io/badge/Node-20-green?logo=node.js)
 
 ## ✨ Features
 
