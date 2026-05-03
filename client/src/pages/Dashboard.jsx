@@ -14,8 +14,12 @@ export default function Dashboard({ onLogout }) {
 
   /* ---------- TOPICS ---------- */
   const fetchTopics = async () => {
-    const res = await API.get("/topics");
-    setTopics(res.data.topics || []);
+    try {
+      const res = await API.get("/topics");
+      setTopics(res.data.topics || []);
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+    }
   };
 
   /* ---------- ✅ FIXED NEWS FETCH ---------- */
@@ -44,9 +48,15 @@ export default function Dashboard({ onLogout }) {
   /* ---------- ACTIONS ---------- */
   const addTopic = async () => {
     if (!newTopic.trim()) return;
-    await API.post("/topics/add", { topic: newTopic });
-    setNewTopic("");
-    fetchTopics();
+    try {
+      await API.post("/topics/add", { topic: newTopic });
+      setNewTopic("");
+      fetchTopics();
+    } catch (error) {
+      console.error("Failed to add topic:", error);
+      const msg = error.response?.data?.error || error.message || "Failed to add topic.";
+      alert(`Error: ${msg}`);
+    }
   };
 
   const removeTopic = async (topic) => {
@@ -55,8 +65,13 @@ export default function Dashboard({ onLogout }) {
   };
 
   const sendDigest = async () => {
-    await API.post("/digest/send");
-    alert("Digest sent!");
+    try {
+      await API.post("/digest/send");
+      alert("Digest sent! Check your email.");
+    } catch (error) {
+      console.error("Failed to send digest:", error);
+      alert(error.response?.data?.error || "Failed to send digest. Check your topics and subscription.");
+    }
   };
 
   return (

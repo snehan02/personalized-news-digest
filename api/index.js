@@ -140,29 +140,36 @@ app.get("/api/news/common", async (req, res) => {
 
 /* ---------------- SEND DIGEST ---------------- */
 async function sendEmail(user) {
-  if (!user.subscribed || user.topics.length === 0) return;
+  try {
+    if (!user.subscribed || user.topics.length === 0) return;
 
-  const news = await axios.get("https://newsapi.org/v2/everything", {
-    params: {
-      q: user.topics.join(" OR "),
-      apiKey: process.env.NEWS_API_KEY,
-      pageSize: 5
-    }
-  });
+    const news = await axios.get("https://newsapi.org/v2/everything", {
+      params: {
+        q: user.topics.join(" OR "),
+        apiKey: process.env.NEWS_API_KEY,
+        pageSize: 5
+      }
+    });
 
-  let html = `<h2>Your News Digest</h2>`;
-  news.data.articles.forEach(a => {
-    html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
-  });
+    let html = `<h2>Your News Digest</h2>`;
+    news.data.articles.forEach(a => {
+      html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
+    });
 
-  await axios.post("https://api.brevo.com/v3/smtp/email", {
-    sender: { email: "no-reply@brevo.com", name: "News Digest" },
-    to: [{ email: user.email }],
-    subject: "📰 Your News Digest",
-    htmlContent: html
-  }, {
-    headers: { "api-key": process.env.BREVO_API_KEY }
-  });
+    await axios.post("https://api.brevo.com/v3/smtp/email", {
+      sender: { 
+        email: process.env.SENDER_EMAIL || "no-reply@example.com", 
+        name: "News Digest" 
+      },
+      to: [{ email: user.email }],
+      subject: "📰 Your News Digest",
+      htmlContent: html
+    }, {
+      headers: { "api-key": process.env.BREVO_API_KEY }
+    });
+  } catch (err) {
+    console.error(`❌ Failed to send email to ${user.email}:`, err.response?.data || err.message);
+  }
 }
 
 app.post("/api/digest/send", auth, async (req, res) => {

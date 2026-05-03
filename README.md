@@ -63,16 +63,14 @@ NEWS_API_KEY=your_news_api_key
 ```
 
 ### 4. Run the Application
-Start the backend:
+You can run both the backend and frontend concurrently from the root directory:
 ```bash
-npm start
-```
-
-Start the frontend (in a separate terminal):
-```bash
-cd client
 npm run dev
 ```
+
+Alternatively, you can run them separately:
+- **Backend**: `npm start` (from root)
+- **Frontend**: `npm run client` (from root) or `cd client && npm run dev`
 
 ## 📱 Mobile View
 The application is fully optimized for mobile devices, ensuring a seamless experience with stacked layouts and touch-friendly interactive elements.

@@ -15,9 +15,14 @@ export default function Register() {
       return;
     }
 
-    await API.post("/auth/register", { email, password });
-    alert("Registered successfully");
-    navigate("/login");
+    try {
+      await API.post("/auth/register", { email, password });
+      alert("Registered successfully! You can now login.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert(error.response?.data?.error || "Registration failed. This email might already be in use.");
+    }
   };
 
   return (

@@ -8,9 +8,14 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState("");
 
   const submit = async () => {
-    const res = await API.post("/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-    setToken(res.data.token);
+    try {
+      const res = await API.post("/auth/login", { email, password });
+      localStorage.setItem("token", res.data.token);
+      setToken(res.data.token);
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert(error.response?.data?.error || "Login failed. Please check your credentials.");
+    }
   };
 
   return (

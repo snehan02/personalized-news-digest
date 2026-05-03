@@ -13,7 +13,7 @@ const app = express();
 
 /* ---------------- MIDDLEWARE ---------------- */
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors());
 
 /* ---------------- DB ---------------- */
 mongoose.connect(process.env.MONGODB_URI)
@@ -23,15 +23,24 @@ mongoose.connect(process.env.MONGODB_URI)
 /* ---------------- AUTH ---------------- */
 const auth = (req, res, next) => {
   const header = req.headers.authorization;
-  if (!header) return res.status(401).json({ error: "No token" });
+  if (!header) {
+    console.warn("⚠️ Auth failed: No Authorization header");
+    return res.status(401).json({ error: "No Authorization header found" });
+  }
 
   const token = header.split(" ")[1];
+  if (!token) {
+    console.warn("⚠️ Auth failed: No token in header");
+    return res.status(401).json({ error: "No token provided" });
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
     next();
-  } catch {
-    res.status(401).json({ error: "Invalid token" });
+  } catch (err) {
+    console.error("❌ Auth failed: Invalid token", err.message);
+    res.status(401).json({ error: "Session expired or invalid token. Please login again." });
   }
 };
 
@@ -115,29 +124,37 @@ app.get("/api/news/common", async (req, res) => {
 
 /* ---------------- SEND DIGEST ---------------- */
 async function sendEmail(user) {
-  if (!user.subscribed || user.topics.length === 0) return;
+  try {
+    if (!user.subscribed || user.topics.length === 0) return;
 
-  const news = await axios.get("https://newsapi.org/v2/everything", {
-    params: {
-      q: user.topics.join(" OR "),
-      apiKey: process.env.NEWS_API_KEY,
-      pageSize: 5
-    }
-  });
+    const news = await axios.get("https://newsapi.org/v2/everything", {
+      params: {
+        q: user.topics.join(" OR "),
+        apiKey: process.env.NEWS_API_KEY,
+        pageSize: 5
+      }
+    });
 
-  let html = `<h2>Your News Digest</h2>`;
-  news.data.articles.forEach(a => {
-    html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
-  });
+    let html = `<h2>Your News Digest</h2>`;
+    news.data.articles.forEach(a => {
+      html += `<p><b>${a.title}</b><br>${a.description || ""}</p>`;
+    });
 
-  await axios.post("https://api.brevo.com/v3/smtp/email", {
-    sender: { email: "no-reply@brevo.com", name: "News Digest" },
-    to: [{ email: user.email }],
-    subject: "📰 Your News Digest",
-    htmlContent: html
-  }, {
-    headers: { "api-key": process.env.BREVO_API_KEY }
-  });
+    await axios.post("https://api.brevo.com/v3/smtp/email", {
+      sender: { 
+        email: process.env.SENDER_EMAIL || "no-reply@example.com", 
+        name: "News Digest" 
+      },
+      to: [{ email: user.email }],
+      subject: "📰 Your News Digest",
+      htmlContent: html
+    }, {
+      headers: { "api-key": process.env.BREVO_API_KEY }
+    });
+    console.log(`✅ Digest sent to ${user.email}`);
+  } catch (err) {
+    console.error(`❌ Failed to send email to ${user.email}:`, err.response?.data || err.message);
+  }
 }
 
 app.post("/api/digest/send", auth, async (req, res) => {
